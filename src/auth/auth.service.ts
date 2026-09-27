@@ -7,6 +7,9 @@ import { DATABASE_CONNECTION } from "../database/database.module.ts";
 import { RefreshToken } from "../common/entities/refresh-token.entity.ts";
 import { User } from "../users/entities/user.entity.ts";
 import { UsersService } from "../users/users.service.ts";
+import { DevicesService } from "../devices/devices.service.ts";
+import { AuditService } from "../common/services/audit.service.ts";
+import { Device } from "../devices/entities/device.entity.ts";
 import { LoginDto } from "./dto/login.dto.ts";
 import { RegisterDto } from "./dto/register.dto.ts";
 
@@ -24,19 +27,40 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
     @Inject(DATABASE_CONNECTION) private readonly dataSource: DataSource | null,
+    private readonly devices: DevicesService,
+    private readonly audit: AuditService,
   ) {}
 
-  async register(dto: RegisterDto): Promise<AuthResponse> {
+  async register(
+    dto: RegisterDto,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     const email = dto.email.toLowerCase();
     const hash = await bcrypt.hash(
       dto.password,
       this.config.get<number>("BCRYPT_ROUNDS", 12),
     );
     const user = await this.users.create(email, hash, dto.displayName ?? null);
-    return await this.issueTokens(user);
+    const device = await this.devices.registerDevice(
+      user.id,
+      dto.deviceName,
+      userAgent,
+    );
+    await this.audit.log({
+      userId: user.id,
+      action: "REGISTER",
+      ipAddress,
+      userAgent,
+    });
+    return await this.issueTokens(user, device);
   }
 
-  async login(dto: LoginDto): Promise<AuthResponse> {
+  async login(
+    dto: LoginDto,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     const user = await this.users.findByEmail(dto.email.toLowerCase());
     if (
       !user || !user.isActive ||
@@ -44,7 +68,18 @@ export class AuthService {
     ) {
       throw new UnauthorizedException("Invalid credentials");
     }
-    return await this.issueTokens(user);
+    const device = await this.devices.registerDevice(
+      user.id,
+      dto.deviceName,
+      userAgent,
+    );
+    await this.audit.log({
+      userId: user.id,
+      action: "LOGIN",
+      ipAddress,
+      userAgent,
+    });
+    return await this.issueTokens(user, device);
   }
 
   async refresh(rawToken: string): Promise<AuthResponse> {
@@ -61,10 +96,15 @@ export class AuthService {
     }
     token.revokedAt = new Date();
     await repository.save(token);
-    return await this.issueTokens(token.user);
+    await this.devices.touch(token.deviceId);
+    return await this.issueTokens(token.user, token.deviceId);
   }
 
-  async logout(rawToken: string): Promise<void> {
+  async logout(
+    rawToken: string,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<void> {
     const repository = await this.refreshRepository();
     const token = await repository.findOne({
       where: { tokenHash: await this.hashToken(rawToken) },
@@ -72,10 +112,19 @@ export class AuthService {
     if (token && !token.revokedAt) {
       token.revokedAt = new Date();
       await repository.save(token);
+      await this.audit.log({
+        userId: token.userId,
+        action: "LOGOUT",
+        ipAddress,
+        userAgent,
+      });
     }
   }
 
-  private async issueTokens(user: User): Promise<AuthResponse> {
+  private async issueTokens(
+    user: User,
+    device: Device | string | null = null,
+  ): Promise<AuthResponse> {
     const expiresIn = this.parseDuration(
       this.config.get<string>("JWT_ACCESS_TTL", "15m"),
     );
@@ -91,7 +140,7 @@ export class AuthService {
     const tokenEntity = repository.create({
       id: crypto.randomUUID(),
       userId: user.id,
-      deviceId: null,
+      deviceId: typeof device === "string" ? device : device?.id ?? null,
       tokenHash: await this.hashToken(refreshToken),
       expiresAt: new Date(Date.now() + ttl * 1000),
       revokedAt: null,

@@ -60,7 +60,11 @@ export class VaultService {
         updatedByDeviceId: null,
       });
       const saved = await repository.save(created);
-      this.audit.log(userId, "VAULT_UPLOAD", { revision: saved.revision });
+      await this.audit.log({
+        userId,
+        action: "VAULT_UPLOAD",
+        metadata: { revision: saved.revision },
+      });
       return this.toResponse(saved);
     }
 
@@ -80,7 +84,11 @@ export class VaultService {
     snapshot.contentHash = await this.hash(envelope.ciphertext);
     snapshot.revision = Number(snapshot.revision) + 1;
     const saved = await repository.save(snapshot);
-    this.audit.log(userId, "VAULT_UPLOAD", { revision: saved.revision });
+    await this.audit.log({
+      userId,
+      action: "VAULT_UPLOAD",
+      metadata: { revision: saved.revision },
+    });
     return this.toResponse(saved);
   }
 

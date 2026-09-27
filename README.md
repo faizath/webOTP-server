@@ -27,10 +27,18 @@ Authentication endpoints are available under `/api/v1/auth`:
 | POST   | `/refresh`  | Rotate an opaque refresh token                    |
 | POST   | `/logout`   | Revoke a refresh token (returns `204`)            |
 
+Login and registration may include `deviceName`. Authenticated device management
+is available at `GET /api/v1/devices` and `DELETE /api/v1/devices/:id`.
+`GET /api/v1/me` returns the profile and preferences, while
+`PATCH /api/v1/me/preferences` updates lock and theme preferences and
+`DELETE /api/v1/me` permanently removes the account.
+
 Set `JWT_SECRET`, `JWT_ACCESS_TTL`, `JWT_REFRESH_TTL`, and `BCRYPT_ROUNDS` in
 `.env` before running outside development. Passwords are bcrypt-hashed and
 refresh tokens are stored only as SHA-256 hashes. Run the initial schema
-migration with `deno task migration:run`.
+migration with `deno task migration:run`. Security-relevant events are persisted
+in `audit_logs`; audit metadata is redacted for passwords, tokens, secrets,
+ciphertext, and authorization values.
 
 ## Vault sync
 

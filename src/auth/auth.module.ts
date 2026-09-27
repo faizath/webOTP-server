@@ -5,6 +5,8 @@ import { ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
 import { DatabaseModule } from "../database/database.module.ts";
 import { UsersModule } from "../users/users.module.ts";
+import { DevicesModule } from "../devices/devices.module.ts";
+import { AuditModule } from "../audit/audit.module.ts";
 import { AuthController } from "./auth.controller.ts";
 import { AuthService } from "./auth.service.ts";
 import { JwtStrategy } from "./strategies/jwt.strategy.ts";
@@ -13,6 +15,8 @@ import { JwtStrategy } from "./strategies/jwt.strategy.ts";
   imports: [
     DatabaseModule,
     UsersModule,
+    DevicesModule,
+    AuditModule,
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],

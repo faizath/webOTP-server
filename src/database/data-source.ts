@@ -4,6 +4,9 @@ import { validateEnvironment } from "../config/configuration.ts";
 import { User } from "../users/entities/user.entity.ts";
 import { RefreshToken } from "../common/entities/refresh-token.entity.ts";
 import { VaultSnapshot } from "../vault/entities/vault-snapshot.entity.ts";
+import { AuditLog } from "../common/entities/audit-log.entity.ts";
+import { Device } from "../devices/entities/device.entity.ts";
+import { UserPreferences } from "../users/entities/user-preferences.entity.ts";
 
 const config = validateEnvironment(Deno.env.toObject());
 
@@ -20,7 +23,14 @@ export function createDataSource(): DataSource {
       encrypt: false,
       trustServerCertificate: true,
     },
-    entities: [User, RefreshToken, VaultSnapshot],
+    entities: [
+      User,
+      RefreshToken,
+      VaultSnapshot,
+      AuditLog,
+      Device,
+      UserPreferences,
+    ],
     migrations: ["migrations/*.ts"],
   };
   return new DataSource(options);
