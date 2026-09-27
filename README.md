@@ -32,6 +32,19 @@ Set `JWT_SECRET`, `JWT_ACCESS_TTL`, `JWT_REFRESH_TTL`, and `BCRYPT_ROUNDS` in
 refresh tokens are stored only as SHA-256 hashes. Run the initial schema
 migration with `deno task migration:run`.
 
+## Vault sync
+
+Vault synchronization is available under `/api/v1/vault` and requires the access
+JWT in an `Authorization: Bearer <token>` header. The server stores the client's
+opaque `VaultEnvelope` (`version: 2`, `salt`, and encrypted `ciphertext`)
+without decrypting or inspecting OTP secrets.
+
+`GET /vault` returns the current envelope and revision, or `404` before the
+first upload. `PUT /vault` creates the first snapshot without `If-Match` (or
+with `If-Match: 0`). Updates require `If-Match: <revision>` and return `409`
+with the current revision when the snapshot has changed. Each upload returns the
+new revision, update timestamp, and server-computed SHA-256 ciphertext hash.
+
 ## Commands
 
 ```sh
