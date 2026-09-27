@@ -16,6 +16,22 @@ The API listens on `PORT` (default `3000`). Health endpoints are available at
 cannot be reached, the response reports `database: "down"` while the API
 continues serving requests.
 
+## Authentication
+
+Authentication endpoints are available under `/api/v1/auth`:
+
+| Method | Endpoint    | Purpose                                           |
+| ------ | ----------- | ------------------------------------------------- |
+| POST   | `/register` | Create an account and issue access/refresh tokens |
+| POST   | `/login`    | Authenticate with email and password              |
+| POST   | `/refresh`  | Rotate an opaque refresh token                    |
+| POST   | `/logout`   | Revoke a refresh token (returns `204`)            |
+
+Set `JWT_SECRET`, `JWT_ACCESS_TTL`, `JWT_REFRESH_TTL`, and `BCRYPT_ROUNDS` in
+`.env` before running outside development. Passwords are bcrypt-hashed and
+refresh tokens are stored only as SHA-256 hashes. Run the initial schema
+migration with `deno task migration:run`.
+
 ## Commands
 
 ```sh

@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { DataSource, type DataSourceOptions } from "typeorm";
 import { validateEnvironment } from "../config/configuration.ts";
+import { User } from "../users/entities/user.entity.ts";
+import { RefreshToken } from "../common/entities/refresh-token.entity.ts";
 
 const config = validateEnvironment(Deno.env.toObject());
 
@@ -17,8 +19,8 @@ export function createDataSource(): DataSource {
       encrypt: false,
       trustServerCertificate: true,
     },
-    entities: [],
-    migrations: [],
+    entities: [User, RefreshToken],
+    migrations: ["migrations/*.ts"],
   };
   return new DataSource(options);
 }
