@@ -68,6 +68,17 @@ with `If-Match: 0`). Updates require `If-Match: <revision>` and return `409`
 with the current revision when the snapshot has changed. Each upload returns the
 new revision, update timestamp, and server-computed SHA-256 ciphertext hash.
 
+Previous snapshots are retained as encrypted, zero-knowledge history:
+
+- `GET /vault/history` returns revision metadata only (never ciphertext).
+- `GET /vault/history/:revision` returns the encrypted envelope for that
+  revision.
+- `POST /vault/history/:revision/restore` makes a historical envelope current,
+  creates a new revision, and archives the current snapshot first.
+
+History is limited to the latest 20 archived revisions per user. These endpoints
+require the same access JWT as the current-vault endpoints.
+
 ## Commands
 
 ```sh
@@ -82,7 +93,7 @@ deno task migration:generate --name Initial
 ```
 
 `migration:run` initializes the configured database and applies migrations
-001-003. `migration:show` connects to the database and reports whether any
+001-004. `migration:show` connects to the database and reports whether any
 configured migrations are pending. The database must be reachable and the
 `DB_NAME` database must already exist.
 

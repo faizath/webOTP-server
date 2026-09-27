@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Headers,
+  Param,
+  Post,
   Put,
   Req,
   UseGuards,
@@ -31,5 +33,26 @@ export class VaultController {
     @Headers("if-match") ifMatch?: string,
   ) {
     return this.vault.upload(request.user.id, dto, ifMatch);
+  }
+
+  @Get("history")
+  history(@Req() request: AuthenticatedRequest) {
+    return this.vault.history(request.user.id);
+  }
+
+  @Get("history/:revision")
+  historyRevision(
+    @Req() request: AuthenticatedRequest,
+    @Param("revision") revision: string,
+  ) {
+    return this.vault.historyRevision(request.user.id, revision);
+  }
+
+  @Post("history/:revision/restore")
+  restore(
+    @Req() request: AuthenticatedRequest,
+    @Param("revision") revision: string,
+  ) {
+    return this.vault.restore(request.user.id, revision);
   }
 }

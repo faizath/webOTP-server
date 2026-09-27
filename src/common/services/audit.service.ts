@@ -7,6 +7,7 @@ export type AuditAction =
   | "LOGIN"
   | "LOGOUT"
   | "VAULT_UPLOAD"
+  | "VAULT_RESTORE"
   | "DEVICE_REVOKE"
   | "REGISTER"
   | "ACCOUNT_DELETE";
