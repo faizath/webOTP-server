@@ -33,7 +33,10 @@
     "test": "deno test --allow-env --allow-net --allow-read",
     "lint": "deno lint",
     "fmt": "deno fmt",
-    "migration:run": "deno run -A npm:typeorm migration:run -- -d src/database/data-source.ts",
+    "ci": "deno task fmt --check && deno task lint && deno task test",
+    "db:up": "docker compose up -d mssql",
+    "migration:run": "deno run -A scripts/run-migrations.ts",
+    "migration:show": "deno run -A scripts/run-migrations.ts --show",
     "migration:generate": "deno run -A npm:typeorm migration:generate -- -d src/database/data-source.ts"
   }
 }

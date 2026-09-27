@@ -7,6 +7,9 @@ import { VaultSnapshot } from "../vault/entities/vault-snapshot.entity.ts";
 import { AuditLog } from "../common/entities/audit-log.entity.ts";
 import { Device } from "../devices/entities/device.entity.ts";
 import { UserPreferences } from "../users/entities/user-preferences.entity.ts";
+import { CreateUsersAndRefreshTokens001 } from "../../migrations/001-create-users-and-refresh-tokens.ts";
+import { CreateVaultSnapshots002 } from "../../migrations/002-create-vault-snapshots.ts";
+import { CreateDevicesAuditLogsAndPreferences003 } from "../../migrations/003-create-devices-and-audit-logs.ts";
 
 const config = validateEnvironment(Deno.env.toObject());
 
@@ -31,7 +34,11 @@ export function createDataSource(): DataSource {
       Device,
       UserPreferences,
     ],
-    migrations: ["migrations/*.ts"],
+    migrations: [
+      CreateUsersAndRefreshTokens001,
+      CreateVaultSnapshots002,
+      CreateDevicesAuditLogsAndPreferences003,
+    ],
   };
   return new DataSource(options);
 }
