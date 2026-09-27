@@ -4,6 +4,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default(
     "development",
   ),
+  CORS_ORIGINS: z.string().default("*"),
+  SWAGGER_ENABLED: z.string().default("false").transform((value) =>
+    value === "true"
+  ),
   PORT: z.coerce.number().int().positive().default(3000),
   DB_HOST: z.string().trim().min(1).optional(),
   DB_PORT: z.coerce.number().int().positive().default(1433),

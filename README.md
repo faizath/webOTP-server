@@ -3,6 +3,10 @@
 Backend API scaffold for encrypted webOTP vault synchronization. The server does
 not store plaintext OTP secrets.
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the zero-knowledge design and module
+overview. OpenAPI documentation is available at `http://localhost:3000/api/docs`
+in development and test environments (or when `SWAGGER_ENABLED=true`).
+
 ![CI](https://github.com/OWNER/REPOSITORY/actions/workflows/ci.yml/badge.svg)
 
 ## Local setup and development workflow
@@ -55,6 +59,20 @@ migration with `deno task migration:run`. Security-relevant events are persisted
 in `audit_logs`; audit metadata is redacted for passwords, tokens, secrets,
 ciphertext, and authorization values.
 
+## API reference
+
+| Area    | Endpoints                                                                               |
+| ------- | --------------------------------------------------------------------------------------- |
+| Health  | `GET /health`, `GET /api/v1/health`                                                     |
+| Auth    | `POST /api/v1/auth/register`, `/login`, `/refresh`, `/logout`                           |
+| User    | `GET /api/v1/me`, `PATCH /api/v1/me/preferences`, `DELETE /api/v1/me`                   |
+| Devices | `GET /api/v1/devices`, `DELETE /api/v1/devices/:id`                                     |
+| Vault   | `GET/PUT /api/v1/vault`, `/history`, `/history/:revision`, `/history/:revision/restore` |
+| OpenAPI | `GET /api/docs` (when enabled)                                                          |
+
+Security defaults include Helmet headers, CORS from `CORS_ORIGINS`, global
+request throttling, sanitized production errors, and redacted request logs.
+
 ## Vault sync
 
 Vault synchronization is available under `/api/v1/vault` and requires the access
@@ -102,6 +120,8 @@ configured migrations are pending. The database must be reachable and the
 | Variable            | Default                | Description                                     |
 | ------------------- | ---------------------- | ----------------------------------------------- |
 | `NODE_ENV`          | `development`          | Runtime environment                             |
+| `CORS_ORIGINS`      | `*`                    | Comma-separated allowed browser origins         |
+| `SWAGGER_ENABLED`   | `false`                | Enable Swagger in production                    |
 | `PORT`              | `3000`                 | HTTP listening port                             |
 | `DB_HOST`           | unset                  | MSSQL host; unset disables database connections |
 | `DB_PORT`           | `1433`                 | MSSQL port                                      |

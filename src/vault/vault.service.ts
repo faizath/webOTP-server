@@ -33,6 +33,11 @@ export type VaultHistoryResponse = VaultHistoryItem & {
 
 @Injectable()
 export class VaultService {
+  private readonly idempotency = new Map<
+    string,
+    { bodyHash: string; response: VaultResponse; expiresAt: number }
+  >();
+
   constructor(
     @Inject(DATABASE_CONNECTION) private readonly dataSource: DataSource | null,
     private readonly audit: AuditService,
@@ -48,9 +53,20 @@ export class VaultService {
     userId: string,
     dto: UploadVaultDto,
     ifMatch?: string,
+    idempotencyKey?: string,
   ): Promise<VaultResponse> {
     const envelope = this.validateEnvelope(dto.envelope);
     const expectedRevision = this.parseIfMatch(ifMatch);
+    const requestHash = await this.hash(JSON.stringify(dto));
+    const cached = this.cachedIdempotency(userId, idempotencyKey);
+    if (cached) {
+      if (cached.bodyHash !== requestHash) {
+        throw new ConflictException(
+          "Idempotency-Key was used with a different request",
+        );
+      }
+      return cached.response;
+    }
     const repository = await this.repository();
     const snapshot = await repository.findOneBy({ userId });
 
@@ -77,7 +93,9 @@ export class VaultService {
         action: "VAULT_UPLOAD",
         metadata: { revision: saved.revision },
       });
-      return this.toResponse(saved);
+      const response = this.toResponse(saved);
+      this.cacheIdempotency(userId, idempotencyKey, requestHash, response);
+      return response;
     }
 
     const result = await this.inTransaction(async (manager) => {
@@ -111,7 +129,9 @@ export class VaultService {
       action: "VAULT_UPLOAD",
       metadata: { revision: result.revision },
     });
-    return this.toResponse(result);
+    const response = this.toResponse(result);
+    this.cacheIdempotency(userId, idempotencyKey, requestHash, response);
+    return response;
   }
 
   async history(userId: string): Promise<VaultHistoryItem[]> {
@@ -281,6 +301,37 @@ export class VaultService {
       new Uint8Array(digest),
       (byte) => byte.toString(16).padStart(2, "0"),
     ).join("");
+  }
+
+  private cachedIdempotency(
+    userId: string,
+    key: string | undefined,
+  ):
+    | { bodyHash: string; response: VaultResponse; expiresAt: number }
+    | undefined {
+    if (!key) return undefined;
+    const cacheKey = `${userId}:${key}`;
+    const cached = this.idempotency.get(cacheKey);
+    if (!cached) return undefined;
+    if (cached.expiresAt <= Date.now()) {
+      this.idempotency.delete(cacheKey);
+      return undefined;
+    }
+    return cached;
+  }
+
+  private cacheIdempotency(
+    userId: string,
+    key: string | undefined,
+    bodyHash: string,
+    response: VaultResponse,
+  ): void {
+    if (!key) return;
+    this.idempotency.set(`${userId}:${key}`, {
+      bodyHash,
+      response,
+      expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+    });
   }
 
   private toResponse(snapshot: VaultSnapshot): VaultResponse {

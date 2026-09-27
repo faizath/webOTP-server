@@ -12,6 +12,7 @@
     "@nestjs/core": "npm:@nestjs/core@^11.1.6",
     "@nestjs/jwt": "npm:@nestjs/jwt@^11.0.0",
     "@nestjs/platform-express": "npm:@nestjs/platform-express@^11.1.6",
+    "@nestjs/swagger": "npm:@nestjs/swagger@^11.2.0",
     "@nestjs/passport": "npm:@nestjs/passport@^11.0.5",
     "@nestjs/throttler": "npm:@nestjs/throttler@^6.4.0",
     "bcryptjs": "npm:bcryptjs@^3.0.2",
@@ -25,6 +26,7 @@
     "reflect-metadata": "npm:reflect-metadata@^0.2.2",
     "rxjs": "npm:rxjs@^7.8.2",
     "typeorm": "npm:typeorm@^0.3.27",
+    "helmet": "npm:helmet@^8.1.0",
     "zod": "npm:zod@^4.1.5"
   },
   "tasks": {

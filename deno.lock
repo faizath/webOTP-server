@@ -9,11 +9,13 @@
     "npm:@nestjs/jwt@11": "11.0.2_@nestjs+common@11.2.6",
     "npm:@nestjs/passport@^11.0.5": "11.0.5_@nestjs+common@11.2.6_passport@0.7.0",
     "npm:@nestjs/platform-express@^11.1.6": "11.2.6_@nestjs+common@11.2.6_@nestjs+core@11.2.6_class-transformer@0.5.1_class-validator@0.14.4_reflect-metadata@0.2.2_rxjs@7.8.2",
+    "npm:@nestjs/swagger@^11.2.0": "11.4.7_@nestjs+common@11.2.6_@nestjs+core@11.2.6_class-transformer@0.5.1_class-validator@0.14.4_reflect-metadata@0.2.2",
     "npm:@nestjs/throttler@^6.4.0": "6.7.1_@nestjs+common@11.2.6_@nestjs+core@11.2.6_reflect-metadata@0.2.2",
     "npm:bcryptjs@^3.0.2": "3.0.3",
     "npm:class-transformer@~0.5.1": "0.5.1",
     "npm:class-validator@~0.14.2": "0.14.4",
     "npm:dotenv@^16.6.1": "16.6.1",
+    "npm:helmet@^8.1.0": "8.3.0",
     "npm:mssql@^11.0.1": "11.0.2",
     "npm:passport-jwt@^4.0.1": "4.0.1",
     "npm:passport@0.7": "0.7.0",
@@ -204,6 +206,9 @@
     "@lukeed/csprng@1.1.0": {
       "integrity": "sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA=="
     },
+    "@microsoft/tsdoc@0.16.0": {
+      "integrity": "sha512-xgAyonlVVS+q7Vc7qLW0UrJU7rSFcETRWsqdXZtjzRU8dF+6CkozTK4V4y1LwOX7j8r/vHphjDeMeGI4tNGeGA=="
+    },
     "@nestjs/common@11.2.6_class-transformer@0.5.1_class-validator@0.14.4_reflect-metadata@0.2.2_rxjs@7.8.2": {
       "integrity": "sha512-uXs98qEOesTf6rGs0OcvFpRdF4M6JvzyBmoIXcTYvojdte4HiwDYv+whaALoboyfu/fuq2umF74FLQu3V7ZPHw==",
       "dependencies": [
@@ -257,6 +262,19 @@
         "jsonwebtoken"
       ]
     },
+    "@nestjs/mapped-types@2.1.1_@nestjs+common@11.2.6_class-transformer@0.5.1_class-validator@0.14.4_reflect-metadata@0.2.2": {
+      "integrity": "sha512-SCCoMEJ6jdeI5h/N+KCVF1+pmg/hmEkNA5nHTS8Gvww7T/LCl4o1gFLinw2iQ60w7slFkszHcGLKGdazVI4F8A==",
+      "dependencies": [
+        "@nestjs/common",
+        "class-transformer",
+        "class-validator",
+        "reflect-metadata"
+      ],
+      "optionalPeers": [
+        "class-transformer",
+        "class-validator"
+      ]
+    },
     "@nestjs/passport@11.0.5_@nestjs+common@11.2.6_passport@0.7.0": {
       "integrity": "sha512-ulQX6mbjlws92PIM15Naes4F4p2JoxGnIJuUsdXQPT+Oo2sqQmENEZXM7eYuimocfHnKlcfZOuyzbA33LwUlOQ==",
       "dependencies": [
@@ -276,6 +294,26 @@
         "tslib"
       ]
     },
+    "@nestjs/swagger@11.4.7_@nestjs+common@11.2.6_@nestjs+core@11.2.6_class-transformer@0.5.1_class-validator@0.14.4_reflect-metadata@0.2.2": {
+      "integrity": "sha512-QyDYnmfP4IRucgmtQxMqzgRBdWtjFoDp8eFvvgf92+3wdLCL+Q0xOFO1948j/ntW/Wi7qT2dyck6ka8ADzPWQQ==",
+      "dependencies": [
+        "@microsoft/tsdoc",
+        "@nestjs/common",
+        "@nestjs/core",
+        "@nestjs/mapped-types",
+        "class-transformer",
+        "class-validator",
+        "js-yaml",
+        "lodash",
+        "path-to-regexp",
+        "reflect-metadata",
+        "swagger-ui-dist"
+      ],
+      "optionalPeers": [
+        "class-transformer",
+        "class-validator"
+      ]
+    },
     "@nestjs/throttler@6.7.1_@nestjs+common@11.2.6_@nestjs+core@11.2.6_reflect-metadata@0.2.2": {
       "integrity": "sha512-gAyY1AkU+cSK5DCjFOB43xax9oakameH4xZa9kAgqBqSBQZgmv3DZylLV8KyZNzOGhceL3kDVtby+CF8VAdmEA==",
       "dependencies": [
@@ -286,6 +324,10 @@
     },
     "@pkgjs/parseargs@0.11.0": {
       "integrity": "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="
+    },
+    "@scarf/scarf@1.4.0": {
+      "integrity": "sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==",
+      "scripts": true
     },
     "@sqltools/formatter@1.2.5": {
       "integrity": "sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw=="
@@ -375,6 +417,9 @@
     },
     "append-field@1.0.0": {
       "integrity": "sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw=="
+    },
+    "argparse@2.0.1": {
+      "integrity": "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q=="
     },
     "available-typed-arrays@1.0.7": {
       "integrity": "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==",
@@ -774,6 +819,9 @@
         "function-bind"
       ]
     },
+    "helmet@8.3.0": {
+      "integrity": "sha512-Qgpiaws3Sm30Av8Eah6sjMCZZwjlBu+E68rhpCWBshY1lb09HtLwj5GviX0OyQIn+ulUS0iX0AxN5n3tLZzz1w=="
+    },
     "http-errors@2.0.1": {
       "integrity": "sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==",
       "dependencies": [
@@ -871,6 +919,13 @@
     },
     "js-md4@0.3.2": {
       "integrity": "sha512-/GDnfQYsltsjRswQhN9fhv3EMw2sCpUdrdxyWDOUK7eyD++r3gRhzgiQgc/x4MAv2i1iuQ4lxO5mvqM3vj4bwA=="
+    },
+    "js-yaml@5.3.0": {
+      "integrity": "sha512-muutsYr+e2+d3rTgUGslq5rxbBlUy3cJ61IsHag2QNDQV+7zXWjkUpmALIajhrlLlrgRUiymj6U3zUr/TMK84Q==",
+      "dependencies": [
+        "argparse"
+      ],
+      "bin": true
     },
     "jsonwebtoken@9.0.3": {
       "integrity": "sha512-MT/xP0CrubFRNLNKvxJ2BYfy53Zkm++5bX9dtuPbqAeQpTVe0MQTFhao8+Cp//EmJp244xt6Drw/GVEGCUj40g==",
@@ -1301,6 +1356,12 @@
         "@tokenizer/token"
       ]
     },
+    "swagger-ui-dist@5.32.13": {
+      "integrity": "sha512-qQobzb3DeC2LeK0j3E8812Ef4aIq1y9flJxvZkimkqUC/w4u7wS+yCc+VakqGJLweUUBrI24effhwo8OsAvNAw==",
+      "dependencies": [
+        "@scarf/scarf"
+      ]
+    },
     "tarn@3.1.2": {
       "integrity": "sha512-3RTvqKZcK/17jnJ8rMKFXbyNogywTs1z0gVPPwFsJGX46rkmUHOdIaSQ/aVO1rS7nH+soiXiWk7rvUXxndm8Dg=="
     },
@@ -1492,11 +1553,13 @@
       "npm:@nestjs/jwt@11",
       "npm:@nestjs/passport@^11.0.5",
       "npm:@nestjs/platform-express@^11.1.6",
+      "npm:@nestjs/swagger@^11.2.0",
       "npm:@nestjs/throttler@^6.4.0",
       "npm:bcryptjs@^3.0.2",
       "npm:class-transformer@~0.5.1",
       "npm:class-validator@~0.14.2",
       "npm:dotenv@^16.6.1",
+      "npm:helmet@^8.1.0",
       "npm:mssql@^11.0.1",
       "npm:passport-jwt@^4.0.1",
       "npm:passport@0.7",
